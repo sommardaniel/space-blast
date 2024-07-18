@@ -12,17 +12,24 @@ HEIGHT = 600
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
+font = pygame.font.Font(pygame.font.get_default_font(),36)
 running = True
+debug = True
+debugString = "Debug: "
+
+text_surface = font.render(debugString, True, (255, 255, 255))
 
 bullets = []
 enemy = Enemy(10, -2, WIDTH, HEIGHT / 2)
 playerOne = Player("Daniel", 20, 3, 100, HEIGHT / 2)
 
 def shoot():
-    bullet = Bullet(2, 10, playerOne.body.x + playerOne.size, playerOne.body.y + playerOne.size / 2)
+    bullet = Bullet(2, 25, playerOne.body.x + playerOne.size, playerOne.body.y + playerOne.size / 2)
     bullets.append(bullet)
 
 def handleKeyEvents(key):
+    global debug, running
+   
     if key[pygame.K_UP] == True:
         playerOne.body.move_ip(0, playerOne.velocity*(-1))
     elif key[pygame.K_DOWN] == True:
@@ -34,6 +41,13 @@ def handleKeyEvents(key):
     
     if key[pygame.K_SPACE] == True:
         shoot()
+    elif key[pygame.K_q] == True:
+        if debug == True:
+            debug = False
+        else:
+            debug = True
+    elif key[pygame.K_ESCAPE] == True:
+        running = False
 
 def draw():
     screen.fill('black')
@@ -45,14 +59,20 @@ def draw():
         bullet.body.move_ip(bullet.velocity, 0)
         pygame.draw.rect(screen, "orange", bullet.body)
 
-def handleEvents(): # not working
+    if debug == True:
+        debugString = "Bullets: " + str(len(bullets)) 
+        text_surface = font.render(debugString, True, (255, 255, 255))
+        screen.blit(text_surface, dest=(20,40))
+
+def handleEvents():
+    global running
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
 def handleAI():
     enemy.body.move_ip(enemy.velocity, 0)
-
+    
 while running:    
     draw()
     handleKeyEvents(pygame.key.get_pressed())
