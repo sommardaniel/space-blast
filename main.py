@@ -1,5 +1,7 @@
 import pygame
 import sys
+import random
+
 sys.path.append('./assets/models/')
 
 from bullet import Bullet
@@ -20,7 +22,7 @@ debugString = "Debug: "
 text_surface = font.render(debugString, True, (255, 255, 255))
 
 bullets = []
-enemy = Enemy(10, -2, WIDTH, HEIGHT / 2)
+enemys = []
 playerOne = Player("Daniel", 20, 3, 100, HEIGHT / 2)
 
 def shoot():
@@ -53,14 +55,15 @@ def draw():
     screen.fill('black')
      
     pygame.draw.rect(screen, "blue", playerOne.body)
-    pygame.draw.rect(screen, "red", enemy.body)
 
+    for enemy in enemys:
+        pygame.draw.rect(screen, "red", enemy.body)
+    
     for bullet in bullets:
-        bullet.body.move_ip(bullet.velocity, 0)
         pygame.draw.rect(screen, "orange", bullet.body)
 
     if debug == True:
-        debugString = "Bullets: " + str(len(bullets)) 
+        debugString = "Bullets: " + str(len(bullets)) + ", Enemys: " + str(len(enemys))
         text_surface = font.render(debugString, True, (255, 255, 255))
         screen.blit(text_surface, dest=(20,40))
 
@@ -69,11 +72,32 @@ def handleEvents():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
-def handleAI():
-    enemy.body.move_ip(enemy.velocity, 0)
+           
+def handleAI(): 
+    for bullet in bullets:
+        if bullet.body.x > WIDTH:
+            bullets.remove(bullet)
+        bullet.body.move_ip(bullet.velocity, 0)
     
-while running:    
+    for enemy in enemys:
+        enemy.body.move_ip(enemy.velocity, 0)
+        if enemy.body.x < 0:
+            enemys.remove(enemy)
+            spawnEnemy()
+
+
+def spawnEnemy():
+    enemy = Enemy(10, -2, random.randint(WIDTH, WIDTH + 50), random.randint(100, HEIGHT - 100))
+    enemys.append(enemy)
+
+def init():
+    spawnEnemy()
+    spawnEnemy()
+    spawnEnemy()
+
+init()
+
+while running:
     draw()
     handleKeyEvents(pygame.key.get_pressed())
     handleAI()
