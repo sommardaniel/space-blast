@@ -1,4 +1,10 @@
 import pygame
+import sys
+sys.path.append('./assets/models/')
+
+from bullet import Bullet
+from player import Player
+from enemy import Enemy
 
 WIDTH = 800
 HEIGHT = 600
@@ -7,47 +13,21 @@ pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 running = True
-
-class Player:
-    def __init__(self, name, size, velocity):
-        self.name = name
-        self.size = size
-        self.velocity = velocity
-        self.body = pygame.Rect((100, HEIGHT/2, size, size))
-
-
-class Enemy:
-    def __init__(self, size, velocity):
-        self.size = size
-        self.velocity = velocity
-        self.body = pygame.Rect((WIDTH, HEIGHT/2, size, size))
-
-class Bullet:
-    def __init__(self, size, velocity, x, y):
-        self.size = size
-        self.velocity = velocity
-        self.body = pygame.Rect((x, y, size, size))
-
-#def spawnEnemy():
-
 bullets = []
 
 def shoot():
     bullet = Bullet(2, 10, playerOne.body.x + playerOne.size, playerOne.body.y + playerOne.size / 2)
     bullets.append(bullet)
 
-enemy = Enemy(10, -2)
-playerOne = Player("Daniel", 20, 3)
+enemy = Enemy(10, -2, WIDTH, HEIGHT / 2)
+playerOne = Player("Daniel", 20, 3, 100, HEIGHT / 2)
 
 while running:
     
     screen.fill('black')
-    
-    
+     
     pygame.draw.rect(screen, "blue", playerOne.body)
-    
     pygame.draw.rect(screen, "red", enemy.body)
-    
     enemy.body.move_ip(enemy.velocity, 0)
 
     for bullet in bullets:
