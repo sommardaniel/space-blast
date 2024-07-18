@@ -13,30 +13,16 @@ pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 running = True
+
 bullets = []
+enemy = Enemy(10, -2, WIDTH, HEIGHT / 2)
+playerOne = Player("Daniel", 20, 3, 100, HEIGHT / 2)
 
 def shoot():
     bullet = Bullet(2, 10, playerOne.body.x + playerOne.size, playerOne.body.y + playerOne.size / 2)
     bullets.append(bullet)
 
-enemy = Enemy(10, -2, WIDTH, HEIGHT / 2)
-playerOne = Player("Daniel", 20, 3, 100, HEIGHT / 2)
-
-while running:
-    
-    screen.fill('black')
-     
-    pygame.draw.rect(screen, "blue", playerOne.body)
-    pygame.draw.rect(screen, "red", enemy.body)
-    enemy.body.move_ip(enemy.velocity, 0)
-
-    for bullet in bullets:
-        bullet.body.move_ip(bullet.velocity, 0)
-        pygame.draw.rect(screen, "orange", bullet.body)
-
-    #KEY EVENT
-    key = pygame.key.get_pressed()
-    
+def handleKeyEvents(key):
     if key[pygame.K_UP] == True:
         playerOne.body.move_ip(0, playerOne.velocity*(-1))
     elif key[pygame.K_DOWN] == True:
@@ -48,14 +34,31 @@ while running:
     
     if key[pygame.K_SPACE] == True:
         shoot()
-    #GAME EVENTS   
+
+def draw():
+    screen.fill('black')
+     
+    pygame.draw.rect(screen, "blue", playerOne.body)
+    pygame.draw.rect(screen, "red", enemy.body)
+
+    for bullet in bullets:
+        bullet.body.move_ip(bullet.velocity, 0)
+        pygame.draw.rect(screen, "orange", bullet.body)
+
+def handleEvents(): # not working
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-    
 
+def handleAI():
+    enemy.body.move_ip(enemy.velocity, 0)
+
+while running:    
+    draw()
+    handleKeyEvents(pygame.key.get_pressed())
+    handleAI()
+    handleEvents()
     pygame.display.update()
-    
     clock.tick(60)
 
 pygame.quit()
