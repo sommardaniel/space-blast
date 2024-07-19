@@ -5,5 +5,6 @@ class Player:
         self.name = name
         self.size = size
         self.velocity = velocity
-        #self.body = pygame.Rect((100, HEIGHT/2, size, size))
         self.body = pygame.Rect((x, y, size, size))
+        self.points = 0
+        self.hp = 100
