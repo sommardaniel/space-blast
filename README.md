@@ -4,9 +4,9 @@
 python -m main.py
 
 ## Controls
-Arrow-keys for direction
-SPACE-key for blasting
-ESCAPE-key to exit game
+- Arrow-keys for direction
+- SPACE-key for blasting
+- ESCAPE-key to exit game
 
 ## Task List
 - [x] Inital controlls and core gameplay mechanics
