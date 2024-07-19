@@ -34,11 +34,11 @@ def handleKeyEvents(key):
    
     if key[pygame.K_UP] == True:
         playerOne.body.move_ip(0, playerOne.velocity*(-1))
-    elif key[pygame.K_DOWN] == True:
+    if key[pygame.K_DOWN] == True:
         playerOne.body.move_ip(0, playerOne.velocity)
-    elif key[pygame.K_LEFT] == True:
+    if key[pygame.K_LEFT] == True:
         playerOne.body.move_ip(playerOne.velocity*(-1), 0)
-    elif key[pygame.K_RIGHT] == True:
+    if key[pygame.K_RIGHT] == True:
         playerOne.body.move_ip(playerOne.velocity, 0)
     
     if key[pygame.K_SPACE] == True:
@@ -63,7 +63,8 @@ def draw():
         pygame.draw.rect(screen, "orange", bullet.body)
 
     if debug == True:
-        debugString = "HP: " + str(playerOne.hp) + ",Points: " + str(playerOne.points) + " ,Bullets: " + str(len(bullets)) + ", Enemys: " + str(len(enemys))
+        #debugString = "HP: " + str(playerOne.hp) + ",Points: " + str(playerOne.points) + " ,Bullets: " + str(len(bullets)) + ", Enemys: " + str(len(enemys))
+        debugString = "HP: " + str(playerOne.hp) + ",Points: " + str(playerOne.points)
         text_surface = font.render(debugString, True, (255, 255, 255))
         screen.blit(text_surface, dest=(20,40))
 
@@ -88,22 +89,24 @@ def handleAI():
             spawnEnemy()
 
 def handleEnemyCollission(enemy): #TODO delay function if hit
-    global running
     x = abs(playerOne.body.x - enemy.body.x)
     y = abs(playerOne.body.y - enemy.body.y)
 
     if x < 10 and y < 10:
         playerOne.hp -= 25
 
-def handleEnemyBulletCollission(bullet):
+def handleEnemyBulletCollission(bullet): #TODO check if bullet exist, timing isues
     for enemy in enemys:
         x = abs(enemy.body.x - bullet.body.x)
         y = abs(enemy.body.y - bullet.body.y)
         if x < 10 and y < 10:
             playerOne.points+=1
-            enemys.remove(enemy)
-            bullets.remove(bullet)
             spawnEnemy()
+            try:
+                enemys.remove(enemy)
+                bullets.remove(bullet)
+            except:
+                print('Error removing bullet')
 
 
 def spawnEnemy():
@@ -111,10 +114,8 @@ def spawnEnemy():
     enemys.append(enemy)
 
 def init():
-    spawnEnemy()
-    spawnEnemy()
-    spawnEnemy()
-
+    for x in range(3):
+        spawnEnemy()
 init()
 
 while running and playerOne.hp > 0:
