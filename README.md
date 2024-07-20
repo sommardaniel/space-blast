@@ -15,7 +15,7 @@ python -m main.py
 ## Task List
 - [x] Inital controlls and core gameplay mechanics
 - [ ] Advance Enemy AI movement
-- [ ] Enemy shooting
+- [x] Enemy shooting
 - [ ] Enemy Waves
 - [ ] Different Enemy types
 - [ ] Start splash screen
