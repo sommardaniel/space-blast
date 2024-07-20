@@ -9,5 +9,5 @@ class Enemy:
         self.bullets = []
 
     def shoot(self):
-        bullet = Bullet(2, 25, self.body.x + self.size, self.body.y + self.size / 2)
+        bullet = Bullet(2, -5, self.body.x + self.size, self.body.y + self.size / 2)
         self.bullets.append(bullet)

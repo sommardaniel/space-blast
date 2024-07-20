@@ -1,7 +1,7 @@
 import pygame
 import sys
 import random
-
+from threading import Timer
 sys.path.append('./assets/models/')
 
 from player import Player
@@ -53,10 +53,12 @@ def draw():
 
     for enemy in enemys:
         pygame.draw.rect(screen, "red", enemy.body)
-    
+        for bullet in enemy.bullets:
+            pygame.draw.rect(screen, "pink", bullet.body)
+
     for bullet in playerOne.bullets:
         pygame.draw.rect(screen, "orange", bullet.body)
-
+    
     if debug == True:
         #debugString = "HP: " + str(playerOne.hp) + ",Points: " + str(playerOne.points) + " ,Bullets: " + str(len(bullets)) + ", Enemys: " + str(len(enemys))
         debugString = "HP: " + str(playerOne.hp) + ",Points: " + str(playerOne.points)
@@ -73,10 +75,16 @@ def handleAI():
     for bullet in playerOne.bullets:
         if bullet.body.x > WIDTH:
             playerOne.bullets.remove(bullet)
-        handleEnemyBulletCollission(bullet)
+        handleBulletCollission(bullet)
         bullet.body.move_ip(bullet.velocity, 0)
     
     for enemy in enemys:
+        for bullet in enemy.bullets:
+            if bullet.body.x > WIDTH:
+                enemy.bullets.remove(bullet)
+            handleBulletCollission(bullet, enemy)
+            bullet.body.move_ip(bullet.velocity, 0)
+        
         handleEnemyCollission(enemy)
         enemy.body.move_ip(enemy.velocity, 0)
         if enemy.body.x < 0:
@@ -90,27 +98,43 @@ def handleEnemyCollission(enemy): #TODO delay function if hit
     if x < 10 and y < 10:
         playerOne.hp -= 25
 
-def handleEnemyBulletCollission(bullet): #TODO check if bullet exist, timing isues
-    for enemy in enemys:
-        x = abs(enemy.body.x - bullet.body.x)
-        y = abs(enemy.body.y - bullet.body.y)
+def handleBulletCollission(bullet, enemy = False): #TODO check if bullet exist, timing isues
+    if enemy:
+        x = abs(playerOne.body.x - bullet.body.x)
+        y = abs(playerOne.body.y - bullet.body.y)
         if x < 10 and y < 10:
-            playerOne.points+=1
-            spawnEnemy()
+            playerOne.hp-=25
             try:
-                enemys.remove(enemy)
-                playerOne.bullets.remove(bullet)
+                enemy.bullets.remove(bullet)
             except:
                 print('Error removing bullet')
+
+    else:
+        for enemy in enemys:
+            x = abs(enemy.body.x - bullet.body.x)
+            y = abs(enemy.body.y - bullet.body.y)
+            if x < 10 and y < 10:
+                playerOne.points+=1
+                spawnEnemy()
+                try:
+                    enemys.remove(enemy)
+                    playerOne.bullets.remove(bullet)
+                except:
+                    print('Error removing bullet')
 
 
 def spawnEnemy():
     enemy = Enemy(10, -2, random.randint(WIDTH, WIDTH + 50), random.randint(100, HEIGHT - 100))
     enemys.append(enemy)
 
+def enemyShoot():
+    for enemy in enemys:
+        enemy.shoot()
+
 def init():
     for x in range(3):
         spawnEnemy()
+    enemyShoot()
 init()
 
 while running and playerOne.hp > 0:
