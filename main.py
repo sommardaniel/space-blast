@@ -10,6 +10,7 @@ from enemy import Enemy
 WIDTH = 800
 HEIGHT = 600
 
+tick = 0
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
@@ -54,7 +55,7 @@ def draw():
     for enemy in enemys:
         pygame.draw.rect(screen, "red", enemy.body)
         for bullet in enemy.bullets:
-            pygame.draw.rect(screen, "pink", bullet.body)
+            pygame.draw.rect(screen, "white", bullet.body)
 
     for bullet in playerOne.bullets:
         pygame.draw.rect(screen, "orange", bullet.body)
@@ -71,13 +72,22 @@ def handleEvents():
         if event.type == pygame.QUIT:
             running = False
            
-def handleAI(): 
+def handleAI():
+    global tick
+    #update timer and fire every n seconds
+    if tick < int(pygame.time.get_ticks()/1000):
+        tick+=1
+        if tick%2:
+            enemyShoot()
+    
+    #handle player bullets
     for bullet in playerOne.bullets:
         if bullet.body.x > WIDTH:
             playerOne.bullets.remove(bullet)
         handleBulletCollission(bullet)
         bullet.body.move_ip(bullet.velocity, 0)
     
+    #handle enemy bullets and collissons
     for enemy in enemys:
         for bullet in enemy.bullets:
             if bullet.body.x > WIDTH:
@@ -98,7 +108,7 @@ def handleEnemyCollission(enemy): #TODO delay function if hit
     if x < 10 and y < 10:
         playerOne.hp -= 25
 
-def handleBulletCollission(bullet, enemy = False): #TODO check if bullet exist, timing isues
+def handleBulletCollission(bullet, enemy = False):
     if enemy:
         x = abs(playerOne.body.x - bullet.body.x)
         y = abs(playerOne.body.y - bullet.body.y)
@@ -130,11 +140,9 @@ def spawnEnemy():
 def enemyShoot():
     for enemy in enemys:
         enemy.shoot()
-
 def init():
     for x in range(3):
         spawnEnemy()
-    enemyShoot()
 init()
 
 while running and playerOne.hp > 0:
