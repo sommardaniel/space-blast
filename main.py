@@ -4,7 +4,6 @@ import random
 
 sys.path.append('./assets/models/')
 
-from bullet import Bullet
 from player import Player
 from enemy import Enemy
 
@@ -21,13 +20,9 @@ debugString = "Debug: "
 
 text_surface = font.render(debugString, True, (255, 255, 255))
 
-bullets = []
 enemys = []
 playerOne = Player("Daniel", 20, 3, 100, HEIGHT / 2)
 
-def shoot():
-    bullet = Bullet(2, 25, playerOne.body.x + playerOne.size, playerOne.body.y + playerOne.size / 2)
-    bullets.append(bullet)
 
 def handleKeyEvents(key):
     global debug, running
@@ -42,7 +37,7 @@ def handleKeyEvents(key):
         playerOne.body.move_ip(playerOne.velocity, 0)
     
     if key[pygame.K_SPACE] == True:
-        shoot()
+        playerOne.shoot()
     elif key[pygame.K_q] == True:
         if debug == True:
             debug = False
@@ -59,7 +54,7 @@ def draw():
     for enemy in enemys:
         pygame.draw.rect(screen, "red", enemy.body)
     
-    for bullet in bullets:
+    for bullet in playerOne.bullets:
         pygame.draw.rect(screen, "orange", bullet.body)
 
     if debug == True:
@@ -75,9 +70,9 @@ def handleEvents():
             running = False
            
 def handleAI(): 
-    for bullet in bullets:
+    for bullet in playerOne.bullets:
         if bullet.body.x > WIDTH:
-            bullets.remove(bullet)
+            playerOne.bullets.remove(bullet)
         handleEnemyBulletCollission(bullet)
         bullet.body.move_ip(bullet.velocity, 0)
     
@@ -104,7 +99,7 @@ def handleEnemyBulletCollission(bullet): #TODO check if bullet exist, timing isu
             spawnEnemy()
             try:
                 enemys.remove(enemy)
-                bullets.remove(bullet)
+                playerOne.bullets.remove(bullet)
             except:
                 print('Error removing bullet')
 
