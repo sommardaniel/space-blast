@@ -6,6 +6,7 @@ sys.path.append('./assets/models/')
 
 from player import Player
 from enemy import Enemy
+from spritesheet import Spritesheet
 
 WIDTH = 800
 HEIGHT = 600
@@ -18,11 +19,11 @@ font = pygame.font.Font(pygame.font.get_default_font(),36)
 running = True
 debug = True
 debugString = "Debug: "
-
 text_surface = font.render(debugString, True, (255, 255, 255))
+space_spritesheet = Spritesheet('./assets/sprites/ships.png')
 
 enemys = []
-playerOne = Player("Daniel", 20, 3, 100, HEIGHT / 2)
+playerOne = Player("Daniel", 20, 3, 100, HEIGHT / 2, space_spritesheet.getSprite(68,62,16,16))
 
 
 def handleKeyEvents(key):
@@ -49,11 +50,11 @@ def handleKeyEvents(key):
 
 def draw():
     screen.fill('black')
-     
-    pygame.draw.rect(screen, "blue", playerOne.body)
+    
+    screen.blit(playerOne.sprite, (playerOne.body.x, playerOne.body.y))
 
     for enemy in enemys:
-        pygame.draw.rect(screen, "red", enemy.body)
+        screen.blit(enemy.sprite, (enemy.body.x, enemy.body.y))
         for bullet in enemy.bullets:
             pygame.draw.rect(screen, "white", bullet.body)
 
@@ -61,7 +62,6 @@ def draw():
         pygame.draw.rect(screen, "orange", bullet.body)
     
     if debug == True:
-        #debugString = "HP: " + str(playerOne.hp) + ",Points: " + str(playerOne.points) + " ,Bullets: " + str(len(bullets)) + ", Enemys: " + str(len(enemys))
         debugString = "HP: " + str(playerOne.hp) + ",Points: " + str(playerOne.points)
         text_surface = font.render(debugString, True, (255, 255, 255))
         screen.blit(text_surface, dest=(20,40))
@@ -134,7 +134,7 @@ def handleBulletCollission(bullet, enemy = False):
 
 
 def spawnEnemy():
-    enemy = Enemy(10, -2, random.randint(WIDTH, WIDTH + 50), random.randint(100, HEIGHT - 100))
+    enemy = Enemy(10, -2, random.randint(WIDTH, WIDTH + 50), random.randint(100, HEIGHT - 100), space_spritesheet.getSprite(16*15+8,16*5+2,16,16))
     enemys.append(enemy)
 
 def enemyShoot():
