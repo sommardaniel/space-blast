@@ -21,3 +21,5 @@ python -m main.py
 - [ ] Start splash screen
 - [ ] Menu
 - [ ] Audio effects for shooting, etc
+- [x] Add sprite for player and enemy ship
+- [ ] Add tiled based sprite with level map

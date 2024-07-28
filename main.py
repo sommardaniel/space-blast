@@ -23,8 +23,8 @@ text_surface = font.render(debugString, True, (255, 255, 255))
 space_spritesheet = Spritesheet('./assets/sprites/ships.png')
 
 enemys = []
-playerOne = Player("Daniel", 20, 3, 100, HEIGHT / 2, space_spritesheet.getSprite(68,62,16,16))
-
+playerOne = Player("Daniel", 32, 3, 100, HEIGHT / 2, space_spritesheet.getSprite(68,62,16,16))
+playerOne.sprite = pygame.transform.scale(playerOne.sprite, (32,32))
 
 def handleKeyEvents(key):
     global debug, running
@@ -134,7 +134,8 @@ def handleBulletCollission(bullet, enemy = False):
 
 
 def spawnEnemy():
-    enemy = Enemy(10, -2, random.randint(WIDTH, WIDTH + 50), random.randint(100, HEIGHT - 100), space_spritesheet.getSprite(16*15+8,16*5+2,16,16))
+    enemy = Enemy(20, -2, random.randint(WIDTH, WIDTH + 50), random.randint(100, HEIGHT - 100), space_spritesheet.getSprite(16*15+8,16*5+2,16,16))
+    enemy.sprite = pygame.transform.scale(enemy.sprite, (20,20))
     enemys.append(enemy)
 
 def enemyShoot():
